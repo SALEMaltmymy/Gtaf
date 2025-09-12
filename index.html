@@ -30,10 +30,410 @@
         .pink-gradient-bg {
             background: linear-gradient(135deg, var(--primary-pink) 0%, var(--dark-pink) 100%);
         }
+        .whatsapp-gradient-bg {
+            background: linear-gradient(135deg, var(--primary-pink) 0%, #25d366 100%);
+        }
         .product-card {
             position: relative;
             overflow: hidden;
             border-radius: 1.5rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+            cursor: pointer;
+            height: 250px;
+        }
+        @media (min-width: 640px) {
+            .product-card {
+                height: 300px;
+            }
+        }
+        @media (min-width: 1024px) {
+            .product-card {
+                height: 350px;
+            }
+        }
+        .product-card:hover {
+            transform: scale(1.03); /* Smaller hover effect */
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        .product-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease-in-out;
+            pointer-events: none; /* Prevents download */
+        }
+        .product-card:hover img {
+            transform: scale(1.05); /* Smaller hover effect */
+        }
+        .product-name-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(217, 151, 171, 0.8) 0%, rgba(255, 255, 255, 0) 100%);
+            color: white;
+            padding: 1rem;
+            text-align: center;
+        }
+        /* Modal Overlay */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+        }
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        .modal-content {
+            background-color: transparent;
+            padding: 0;
+            border-radius: 1.5rem;
+            text-align: center;
+            position: absolute;
+            max-width: 90%;
+            width: 300px;
+            transition: all 0.4s ease-in-out;
+            transform-origin: top left;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .modal-content.show {
+            transform: scale(1) translate(0, 0) !important;
+            opacity: 1;
+        }
+        .modal-content img {
+            width: 100%;
+            height: auto;
+            border-radius: 1.5rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .modal-title-overlay {
+            width: 100%;
+            background: linear-gradient(to top, var(--primary-pink) 0%, rgba(255, 255, 255, 0) 100%);
+            padding-top: 2rem;
+            padding-bottom: 1rem;
+            border-bottom-left-radius: 1.5rem;
+            border-bottom-right-radius: 1.5rem;
+            margin-top: -10rem;
+            z-index: 1;
+            position: relative;
+        }
+        .main-content-wrapper {
+            transition: filter 0.3s ease-in-out;
+        }
+        .main-content-wrapper.blurred {
+            filter: blur(5px);
+        }
+        .product-name-modal {
+            color: white;
+        }
+        .modal-button-container {
+            margin-top: 1rem;
+            position: relative;
+            z-index: 2;
+        }
+        .whatsapp-icon {
+            margin-left: 0.5rem;
+            width: 1.5rem;
+            height: 1.5rem;
+            vertical-align: middle;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body class="text-gray-800">
+
+    <!-- Main Content Wrapper to be blurred -->
+    <div class="main-content-wrapper">
+        <!-- Header & Navigation -->
+        <header class="bg-white/80 backdrop-blur-md sticky top-0 z-50 shadow-sm rounded-b-xl mx-2 mt-2 p-4">
+            <nav class="container mx-auto flex items-center justify-between">
+                <!-- Logo -->
+                <a href="#" class="font-bold text-2xl text-rose-500 hover:text-rose-600 transition duration-300">
+                    <img src="agdan.png" alt="أقطان" class="h-10">
+                </a>
+                <!-- Desktop Nav Links -->
+                <div class="hidden md:flex space-x-8 space-x-reverse">
+                    <a href="#products" class="text-gray-600 hover:text-rose-500 transition duration-300">المنتجات</a>
+                    <a href="#vision" class="text-gray-600 hover:text-rose-500 transition duration-300">رؤيتنا</a>
+                    <a href="#goals" class="text-gray-600 hover:text-rose-500 transition duration-300">هدفنا</a>
+                    <a href="#message" class="text-gray-600 hover:text-rose-500 transition duration-300">رسالتنا</a>
+                </div>
+                <!-- Mobile Menu Button -->
+                <div class="md:hidden">
+                    <button id="mobile-menu-btn" class="text-gray-600 hover:text-rose-500 transition duration-300 focus:outline-none">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+                        </svg>
+                    </button>
+                </div>
+            </nav>
+            <!-- Mobile Menu -->
+            <div id="mobile-menu" class="hidden md:hidden mt-4 text-center space-y-2">
+                <a href="#products" class="block text-gray-600 hover:text-rose-500 transition duration-300 p-2">المنتجات</a>
+                <a href="#vision" class="block text-gray-600 hover:text-rose-500 transition duration-300 p-2">رؤيتنا</a>
+                <a href="#goals" class="block text-gray-600 hover:text-rose-500 transition duration-300 p-2">هدفنا</a>
+                <a href="#message" class="block text-gray-600 hover:text-rose-500 transition duration-300 p-2">رسالتنا</a>
+            </div>
+        </header>
+
+        <main class="container mx-auto py-12 px-4">
+
+            <!-- Hero Section -->
+            <section class="text-center py-16">
+                <h1 class="text-5xl md:text-6xl font-extrabold text-rose-600 mb-4 leading-tight">حلول طباعة مبتكرة</h1>
+                <p class="text-lg md:text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
+                    نحول أفكارك إلى واقع ملموس بجودة لا مثيل لها وتصاميم إبداعية.
+                </p>
+                <a href="https://wa.me/+966544460188" class="pink-gradient-bg text-white font-bold py-3 px-8 rounded-full shadow-lg hover:shadow-xl transition duration-300 transform hover:scale-105">
+                    اطلب خدماتنا الآن
+                </a>
+            </section>
+
+            <!-- Products Section -->
+            <section id="products" class="py-16 md:py-24">
+                <h2 class="text-3xl md:text-4xl font-bold text-center text-rose-500 mb-12">المنتجات</h2>
+                <div class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8">
+                    <!-- Product Card: Boxes -->
+                    <div class="product-card" data-name="طباعة البوكسات" data-image="https://placehold.co/500x500/d997ab/ffffff?text=Boxes">
+                        <img src="https://placehold.co/500x500/d997ab/ffffff?text=Boxes" alt="صورة طباعة البوكسات" oncontextmenu="return false;">
+                        <div class="product-name-overlay">
+                            <h3 class="text-md md:text-xl font-bold">طباعة البوكسات</h3>
+                        </div>
+                    </div>
+                    <!-- Product Card: Bags -->
+                    <div class="product-card" data-name="طباعة الأكياس" data-image="https://placehold.co/500x500/d997ab/ffffff?text=Bags">
+                        <img src="https://placehold.co/500x500/d997ab/ffffff?text=Bags" alt="صورة طباعة الأكياس" oncontextmenu="return false;">
+                        <div class="product-name-overlay">
+                            <h3 class="text-md md:text-xl font-bold">طباعة الأكياس</h3>
+                        </div>
+                    </div>
+                    <!-- Product Card: Stickers -->
+                    <div class="product-card" data-name="طباعة الستيكرات" data-image="https://placehold.co/500x500/d997ab/ffffff?text=Stickers">
+                        <img src="https://placehold.co/500x500/d997ab/ffffff?text=Stickers" alt="صورة طباعة الستيكرات" oncontextmenu="return false;">
+                        <div class="product-name-overlay">
+                            <h3 class="text-md md:text-xl font-bold">طباعة الستيكرات</h3>
+                        </div>
+                    </div>
+                    <!-- Product Card: Wedding Cards -->
+                    <div class="product-card" data-name="طباعة كروت أفراح" data-image="https://placehold.co/500x500/d997ab/ffffff?text=Cards">
+                        <img src="https://placehold.co/500x500/d997ab/ffffff?text=Cards" alt="صورة طباعة كروت أفراح" oncontextmenu="return false;">
+                        <div class="product-name-overlay">
+                            <h3 class="text-md md:text-xl font-bold">طباعة كروت أفراح</h3>
+                        </div>
+                    </div>
+                    <!-- Product Card: Packaging Paper -->
+                    <div class="product-card" data-name="طباعة أوراق تغليف" data-image="https://placehold.co/500x500/d997ab/ffffff?text=Paper">
+                        <img src="https://placehold.co/500x500/d997ab/ffffff?text=Paper" alt="صورة طباعة أوراق تغليف" oncontextmenu="return false;">
+                        <div class="product-name-overlay">
+                            <h3 class="text-md md:text-xl font-bold">طباعة أوراق تغليف</h3>
+                        </div>
+                    </div>
+                    <!-- Product Card: Coffee Cups -->
+                    <div class="product-card" data-name="أكواب قهوة" data-image="https://placehold.co/500x500/d997ab/ffffff?text=Cups">
+                        <img src="https://placehold.co/500x500/d997ab/ffffff?text=Cups" alt="صورة أكواب قهوة" oncontextmenu="return false;">
+                        <div class="product-name-overlay">
+                            <h3 class="text-md md:text-xl font-bold">أكواب قهوة</h3>
+                        </div>
+                    </div>
+                    <!-- Product Card: Acrylic Panels -->
+                    <div class="product-card" data-name="لوحات اكريلك" data-image="https://placehold.co/500x500/d997ab/ffffff?text=Acrylic">
+                        <img src="https://placehold.co/500x500/d997ab/ffffff?text=Acrylic" alt="صورة لوحات اكريلك" oncontextmenu="return false;">
+                        <div class="product-name-overlay">
+                            <h3 class="text-md md:text-xl font-bold">لوحات اكريلك</h3>
+                        </div>
+                    </div>
+                    <!-- Product Card: Business Cards -->
+                    <div class="product-card" data-name="كروت شخصية" data-image="https://placehold.co/500x500/d997ab/ffffff?text=Cards">
+                        <img src="https://placehold.co/500x500/d997ab/ffffff?text=Cards" alt="صورة كروت شخصية" oncontextmenu="return false;">
+                        <div class="product-name-overlay">
+                            <h3 class="text-md md:text-xl font-bold">كروت شخصية</h3>
+                        </div>
+                    </div>
+                    <!-- Product Card: Pop-up Banner -->
+                    <div class="product-card" data-name="بنر بوب اب" data-image="https://placehold.co/500x500/d997ab/ffffff?text=Banner">
+                        <img src="https://placehold.co/500x500/d997ab/ffffff?text=Banner" alt="صورة بنر بوب اب" oncontextmenu="return false;">
+                        <div class="product-name-overlay">
+                            <h3 class="text-md md:text-xl font-bold">بنر بوب اب</h3>
+                        </div>
+                    </div>
+                    <!-- Product Card: Roll-up Banner -->
+                    <div class="product-card" data-name="بنر رول اب" data-image="https://placehold.co/500x500/d997ab/ffffff?text=Roll-up">
+                        <img src="https://placehold.co/500x500/d997ab/ffffff?text=Roll-up" alt="صورة بنر رول اب" oncontextmenu="return false;">
+                        <div class="product-name-overlay">
+                            <h3 class="text-md md:text-xl font-bold">بنر رول اب</h3>
+                        </div>
+                    </div>
+                    <!-- Product Card: Seals -->
+                    <div class="product-card" data-name="تنفيذ الأختام" data-image="https://placehold.co/500x500/d997ab/ffffff?text=Seals">
+                        <img src="https://placehold.co/500x500/d997ab/ffffff?text=Seals" alt="صورة تنفيذ الأختام" oncontextmenu="return false;">
+                        <div class="product-name-overlay">
+                            <h3 class="text-md md:text-xl font-bold">تنفيذ الأختام</h3>
+                        </div>
+                    </div>
+                    <!-- Product Card: Label Tapes -->
+                    <div class="product-card" data-name="شرائط ليبل" data-image="https://placehold.co/500x500/d997ab/ffffff?text=Labels">
+                        <img src="https://placehold.co/500x500/d997ab/ffffff?text=Labels" alt="صورة شرائط ليبل" oncontextmenu="return false;">
+                        <div class="product-name-overlay">
+                            <h3 class="text-md md:text-xl font-bold">شرائط ليبل</h3>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Vision Section -->
+            <section id="vision" class="py-16 md:py-24">
+                <div class="bg-white rounded-3xl shadow-lg p-8 md:p-12 text-center">
+                    <h2 class="text-3xl md:text-4xl font-bold text-rose-500 mb-4">رؤيتنا</h2>
+                    <p class="text-lg md:text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+                        أن نكون الخيار الأول للعملاء في مجال الطباعة، من خلال تقديم خدمات استثنائية تتجاوز توقعاتهم وتساهم في تحقيق أهدافهم التجارية والشخصية.
+                    </p>
+                </div>
+            </section>
+
+            <!-- Goals Section -->
+            <section id="goals" class="py-16 md:py-24">
+                <div class="bg-white rounded-3xl shadow-lg p-8 md:p-12 text-center">
+                    <h2 class="text-3xl md:text-4xl font-bold text-rose-500 mb-4">هدفنا</h2>
+                    <p class="text-lg md:text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+                        تقديم أعلى مستويات الجودة في الطباعة باستخدام أحدث التقنيات والمواد، مع الالتزام بالدقة في المواعيد وتقديم خدمة عملاء ممتازة.
+                    </p>
+                </div>
+            </section>
+
+            <!-- Message Section -->
+            <section id="message" class="py-16 md:py-24">
+                <div class="bg-white rounded-3xl shadow-lg p-8 md:p-12 text-center">
+                    <h2 class="text-3xl md:text-4xl font-bold text-rose-500 mb-4">رسالتنا</h2>
+                    <p class="text-lg md:text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+                        نسعى لتمكين عملائنا من التعبير عن هوياتهم التجارية والشخصية بأسلوب فريد وإبداعي عبر منتجات طباعة عالية الجودة.
+                    </p>
+                </div>
+            </section>
+
+        </main>
+
+        <!-- Footer -->
+        <footer class="bg-white text-gray-500 text-center py-6 rounded-t-xl mx-2 mb-2 shadow-inner">
+            <p class="text-sm font-bold text-rose-500 mb-2">من الرياض إلى العالم</p>
+            &copy; 2024 أقطان لخدمات الطباعة. جميع الحقوق محفوظة.
+        </footer>
+    </div>
+
+    <!-- Product Modal -->
+    <div id="product-modal" class="modal-overlay">
+        <div class="modal-content">
+            <img id="modal-image" class="w-full rounded-2xl mb-4" src="" alt="Selected product image">
+            <div class="relative w-full">
+                <div class="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-black via-transparent to-transparent opacity-80 rounded-b-2xl"></div>
+                <h3 id="modal-name" class="product-name-modal text-white text-2xl md:text-3xl font-bold mb-4 absolute bottom-0 inset-x-0 p-4 z-10"></h3>
+            </div>
+            <div class="modal-button-container">
+                <a id="modal-whatsapp-btn" href="#" target="_blank" class="whatsapp-gradient-bg text-white font-bold py-3 px-8 rounded-full shadow-lg hover:shadow-xl transition duration-300 transform hover:scale-105 flex items-center justify-center">
+                    <img src="Wt.svg" alt="WhatsApp Icon" class="h-6 w-6 ml-2">
+                    اطلب عبر الواتساب
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    targetElement.scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+
+        // Toggle mobile menu
+        document.getElementById('mobile-menu-btn').addEventListener('click', function() {
+            const mobileMenu = document.getElementById('mobile-menu');
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // Product Modal Logic
+        const productCards = document.querySelectorAll('.product-card');
+        const modal = document.getElementById('product-modal');
+        const modalContent = document.querySelector('.modal-content');
+        const modalImage = document.getElementById('modal-image');
+        const modalName = document.getElementById('modal-name');
+        const modalWhatsappBtn = document.getElementById('modal-whatsapp-btn');
+        const mainContentWrapper = document.querySelector('.main-content-wrapper');
+        const whatsappNumber = "+966544460188";
+
+        productCards.forEach(card => {
+            card.addEventListener('click', (event) => {
+                const productName = card.getAttribute('data-name');
+                const productImage = card.getAttribute('data-image');
+                
+                modalImage.src = productImage;
+                modalName.textContent = productName;
+                
+                // Construct the WhatsApp message with the product name
+                const message = `مرحباً، أود أن أطلب منتج: ${productName}`;
+                modalWhatsappBtn.href = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
+
+                const cardRect = card.getBoundingClientRect();
+                const modalWidth = 300; 
+                const modalHeight = 400; 
+                
+                // Set initial position of the modal to be at the exact location of the clicked card
+                modalContent.style.left = `${cardRect.left}px`;
+                modalContent.style.top = `${cardRect.top}px`;
+                modalContent.style.width = `${cardRect.width}px`;
+                modalContent.style.height = `${cardRect.height}px`;
+                modalContent.style.opacity = '0';
+                modalContent.style.transform = 'scale(1)';
+                
+                // Show the modal overlay and blur the background
+                modal.classList.add('active');
+                mainContentWrapper.classList.add('blurred');
+
+                // Animate to the final centered position and final size
+                const targetLeft = window.innerWidth / 2 - modalWidth / 2;
+                const targetTop = window.innerHeight / 2 - modalHeight / 2;
+                
+                setTimeout(() => {
+                    modalContent.style.left = `${targetLeft}px`;
+                    modalContent.style.top = `${targetTop}px`;
+                    modalContent.style.width = `${modalWidth}px`;
+                    modalContent.style.height = `${modalHeight}px`;
+                    modalContent.style.opacity = '1';
+                }, 10);
+            });
+        });
+
+        modal.addEventListener('click', (event) => {
+            // Close modal only if the overlay itself is clicked
+            if (event.target === modal) {
+                modal.classList.remove('active');
+                mainContentWrapper.classList.remove('blurred');
+            }
+        });
+    </script>
+</body>
+</html>
+
             box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
             transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
             cursor: pointer;
