@@ -200,7 +200,7 @@
                 <p class="text-lg md:text-xl text-white mb-8 max-w-2xl mx-auto">
                     نحول أفكارك إلى واقع ملموس بجودة لا مثيل لها وتصاميم إبداعية.
                 </p>
-                <a href="https://wa.me/966‎548977813" class="pink-gradient-bg text-white font-bold py-3 px-8 rounded-full shadow-lg hover:shadow-xl transition duration-300 transform hover:scale-105">
+                <a href="https://wa.me/966548977813" class="pink-gradient-bg text-white font-bold py-3 px-8 rounded-full shadow-lg hover:shadow-xl transition duration-300 transform hover:scale-105" target="_blank">
                     اطلب خدماتنا الآن
                 </a>
             </section>
@@ -340,20 +340,21 @@
             <p class="mt-4">&copy; 2024 أقطان لخدمات الطباعة. جميع الحقوق محفوظة.</p>
         </footer>
     </div>
-
+    
     <!-- Product Modal -->
     <div id="product-modal" class="modal-overlay">
         <div class="modal-content">
             <img id="modal-image" class="w-full rounded-2xl mb-4" src="" alt="Selected product image">
             <h3 id="modal-name" class="product-name-modal text-white text-2xl md:text-3xl font-bold mb-4"></h3>
             <div class="modal-button-container">
-                <a id="modal-whatsapp-btn" href="#" target="_blank" class="whatsapp-gradient-bg text-white font-bold py-3 px-8 rounded-full shadow-lg hover:shadow-xl transition duration-300 transform hover:scale-105">
+                <a id="modal-whatsapp-btn" href="https://wa.me/966548977813" target="_blank" class="whatsapp-gradient-bg text-white font-bold py-3 px-8 rounded-full shadow-lg hover:shadow-xl transition duration-300 transform hover:scale-105">
                     اطلب عبر الواتساب
                 </a>
             </div>
         </div>
     </div>
 
+    <!-- JavaScript for Mobile Menu and Product Modal -->
     <script>
         // Smooth scrolling for navigation links
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
@@ -381,9 +382,7 @@
         const modalContent = document.querySelector('.modal-content');
         const modalImage = document.getElementById('modal-image');
         const modalName = document.getElementById('modal-name');
-        const modalWhatsappBtn = document.getElementById('modal-whatsapp-btn');
         const mainContentWrapper = document.querySelector('.main-content-wrapper');
-        const whatsappNumber = "‎966548977813"; // Removed '+' for direct link
 
         productCards.forEach(card => {
             card.addEventListener('click', (event) => {
@@ -393,9 +392,6 @@
                 modalImage.src = productImage;
                 modalName.textContent = productName;
                 
-                // Link the modal button to WhatsApp
-                modalWhatsappBtn.href = `href="https://wa.me/966‎548977813"}`;
-
                 // Animate the modal to show up
                 modal.classList.add('active');
                 mainContentWrapper.classList.add('blurred');
